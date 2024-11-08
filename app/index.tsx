@@ -1,13 +1,13 @@
-import { TouchableOpacity, StyleSheet, Text, View, Alert } from "react-native";
-import { theme } from "./theme";
-import ShoppingListItem from "./components/ShoppingListItem";
+import { StyleSheet, View } from "react-native";
+import { theme } from "../theme";
+import ShoppingListItem from "../components/ShoppingListItem";
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <ShoppingListItem name="Coffee"/>
+      <ShoppingListItem name="Coffee" />
       <ShoppingListItem name="Sugar" isCompleted />
-      <ShoppingListItem name="Tea"  isCompleted={true} />
+      <ShoppingListItem name="Tea" isCompleted={true} />
     </View>
   );
 }

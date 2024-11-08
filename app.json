@@ -2,6 +2,7 @@
   "expo": {
     "name": "taskly",
     "slug": "taskly",
+    "scheme": "taskly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +29,9 @@
       "eas": {
         "projectId": "b6a6b5c5-6baf-4311-bb2c-1296745e9ec5"
       }
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
