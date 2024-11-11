@@ -36,14 +36,7 @@ export default function ShoppingListItem({ name, isCompleted }: Props) {
       >
         {name}
       </Text>
-      <TouchableOpacity
-        // style={[
-        //   styles.button,
-        //   isCompleted ? styles.completedButton : undefined,
-        // ]}
-        onPress={handleDelete}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity onPress={handleDelete} activeOpacity={0.8}>
         <AntDesign
           name="closecircle"
           size={24}
@@ -61,7 +54,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 16,
     paddingHorizontal: 18,
-    borderBottomColor: theme.colorCerulean,
+    borderBottomColor: theme.colorOrange,
     borderBottomWidth: 1,
   },
   completedContainer: {
