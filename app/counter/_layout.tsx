@@ -11,7 +11,7 @@ export default function Layout() {
         options={{
           title: "Counter",
           headerRight: () => (
-            <Link href="/counter/history">
+            <Link href="/counter/history" asChild>
               <Pressable hitSlop={20}>
                 <MaterialIcons
                   name="history"
