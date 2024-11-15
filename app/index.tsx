@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { FlatList, StyleSheet, TextInput, View, Text } from "react-native";
 import { theme } from "../theme";
 import ShoppingListItem from "../components/ShoppingListItem";
 import { useState } from "react";
@@ -8,20 +8,28 @@ type ShoppingListItemType = {
   name: string;
 };
 
-const initialList: ShoppingListItemType[] = [
-  { id: "1", name: "Coffee" },
-  { id: "2", name: "Tea" },
-  { id: "3", name: "Milk" },
-];
+const generateId = () =>
+  `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+// const initialList: ShoppingListItemType[] = [
+//   { id: generateId(), name: "Coffee" },
+//   { id: generateId(), name: "Tea" },
+//   { id: generateId(), name: "Milk" },
+// ];
 
 export default function App() {
   const [value, setValue] = useState("");
-  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>(initialList);
+  const [shoppingList, setShoppingList] =
+    useState<ShoppingListItemType[]>([]);
+
+  console.log("App component re-rendered");
 
   const handleSubmit = () => {
-    if(value) {
+    if (value) {
+      console.log(`this is handle submit and ${value}`);
+
       const newShoppingList = [
-        {id: new Date().toTimeString(), name: value },
+        { id: generateId(), name: value },
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
@@ -30,20 +38,37 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.textInput}
-        placeholder="E.g. Sugar"
-        value={value}
-        onChangeText={setValue}
-        keyboardType="default"
-        autoCapitalize="words"
-        autoCorrect={true}
-        underlineColorAndroid="transparent"
-        onSubmitEditing={handleSubmit}
-      />
-      {shoppingList.map(item => <ShoppingListItem key={item.id} name={item.name} isCompleted={false} />)}
-    </View>
+    <>
+      {console.log("FlatList re-rendered")}
+      <FlatList
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text>Shopping list is empty.</Text>
+          </View>     }
+        ListHeaderComponent={
+          <TextInput
+            style={styles.textInput}
+            placeholder="E.g. Sugar"
+            value={value}
+            onChangeText={setValue}
+            keyboardType="default"
+            autoCapitalize="words"
+            autoCorrect={true}
+            underlineColorAndroid="transparent"
+            onSubmitEditing={handleSubmit}
+          />
+        }
+        data={shoppingList}
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}
+        stickyHeaderIndices={[0]}
+        renderItem={({ item }) => {
+          console.log(`Rendering item: ${item.name}`);
+
+          return <ShoppingListItem name={item.name} />;
+        }}
+      ></FlatList>
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -51,7 +76,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colorWhite,
     // justifyContent: "center",
-    paddingTop: 12,
+    padding: 12,
+  },
+  contentContainer: {
+    paddingBottom: 24,
   },
   textInput: {
     borderColor: theme.colorGrey,
@@ -61,5 +89,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 18,
     borderRadius: 50,
+    backgroundColor: theme.colorWhite,
   },
+  emptyContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 18,
+  }
 });
