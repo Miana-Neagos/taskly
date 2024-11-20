@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, TextInput, View, Text } from "react-native";
+import { FlatList, StyleSheet, TextInput, View, Text, LayoutAnimation, Platform, UIManager } from "react-native";
 import { theme } from "../theme";
 import ShoppingListItem from "../components/ShoppingListItem";
 import { useEffect, useState } from "react";
@@ -17,6 +17,12 @@ export type ShoppingListItemType = {
 const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
 export default function App() {
   const [typedValue, setTypedValue] = useState<string>();
   const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
@@ -27,8 +33,8 @@ export default function App() {
     const fetchInitial = async () => {
       const data = await getFromStorage(storageKey);
       if (data) {
-        console.log(`this is USE EFFECT and the data is:`, data);
-        
+        // console.log(`this is USE EFFECT and the data is:`, data);
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setShoppingList(data);
       }
     };
@@ -45,6 +51,8 @@ export default function App() {
         },
         ...shoppingList,
       ];
+      console.log("Configuring animation...");
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
       setShoppingList(newShoppingList);
       saveToStorage(storageKey, newShoppingList);
       setTypedValue("");
@@ -53,6 +61,7 @@ export default function App() {
 
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter((item) => item.id !== id);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShoppingList(newShoppingList);
     saveToStorage(storageKey, newShoppingList);
   };
@@ -69,6 +78,7 @@ export default function App() {
           }
         : item
     );
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setShoppingList(newShoppingList);
     saveToStorage(storageKey, newShoppingList);
   };
