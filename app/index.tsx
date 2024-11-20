@@ -1,10 +1,13 @@
 import { FlatList, StyleSheet, TextInput, View, Text } from "react-native";
 import { theme } from "../theme";
 import ShoppingListItem from "../components/ShoppingListItem";
-import { useState } from "react";
-import { newSortingList } from "../utils/orderShoppingList";
+import { useEffect, useState } from "react";
+import { orderShoppingList } from "../utils/orderShoppingList";
+import { getFromStorage, saveToStorage } from "../utils/storage";
 
-type ShoppingListItemType = {
+const storageKey = "shop-list";
+
+export type ShoppingListItemType = {
   id: string;
   name: string;
   completedAtTimestamp?: number;
@@ -15,19 +18,35 @@ const generateId = () =>
   `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 export default function App() {
-  const [typedValue, setTypedValue] = useState("");
+  const [typedValue, setTypedValue] = useState<string>();
   const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
 
   // console.log("App component re-rendered");
 
+  useEffect(() => {
+    const fetchInitial = async () => {
+      const data = await getFromStorage(storageKey);
+      if (data) {
+        console.log(`this is USE EFFECT and the data is:`, data);
+        
+        setShoppingList(data);
+      }
+    };
+    fetchInitial();
+  }, []);
+
   const handleSubmit = () => {
     if (typedValue) {
-      // console.log(`this is handle submit and ${value}`);
       const newShoppingList = [
-        { id: generateId(), name: typedValue, lastUpdatedTimestamp: Date.now() },
+        {
+          id: generateId(),
+          name: typedValue,
+          lastUpdatedTimestamp: Date.now(),
+        },
         ...shoppingList,
       ];
       setShoppingList(newShoppingList);
+      saveToStorage(storageKey, newShoppingList);
       setTypedValue("");
     }
   };
@@ -35,6 +54,7 @@ export default function App() {
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter((item) => item.id !== id);
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   };
 
   const handleToggleComplete = (id: string) => {
@@ -50,6 +70,7 @@ export default function App() {
         : item
     );
     setShoppingList(newShoppingList);
+    saveToStorage(storageKey, newShoppingList);
   };
 
   return (
@@ -74,7 +95,7 @@ export default function App() {
             onSubmitEditing={handleSubmit}
           />
         }
-        data={newSortingList(shoppingList)}
+        data={orderShoppingList(shoppingList)}
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
         stickyHeaderIndices={[0]}

@@ -19,8 +19,9 @@
 //     return 0;
 //   });
 // }
+import { ShoppingListItemType } from "../app";
 
-export function newSortingList(shoppingList) {
+export function orderShoppingList(shoppingList: ShoppingListItemType[]):ShoppingListItemType[] {
   return shoppingList.sort((item1, item2) => {
     if (!item1.completedAtTimestamp && item2.completedAtTimestamp) return -1;
     if (item1.completedAtTimestamp && !item2.completedAtTimestamp) return 1;
