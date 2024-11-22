@@ -4,6 +4,7 @@ import ShoppingListItem from "../components/ShoppingListItem";
 import { useEffect, useState } from "react";
 import { orderShoppingList } from "../utils/orderShoppingList";
 import { getFromStorage, saveToStorage } from "../utils/storage";
+import * as Haptics from "expo-haptics";
 
 const storageKey = "shop-list";
 
@@ -52,7 +53,7 @@ export default function App() {
         ...shoppingList,
       ];
       console.log("Configuring animation...");
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setShoppingList(newShoppingList);
       saveToStorage(storageKey, newShoppingList);
       setTypedValue("");
@@ -61,26 +62,33 @@ export default function App() {
 
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter((item) => item.id !== id);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setShoppingList(newShoppingList);
     saveToStorage(storageKey, newShoppingList);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft)
+    setShoppingList(newShoppingList);
   };
 
   const handleToggleComplete = (id: string) => {
-    const newShoppingList = shoppingList.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            lastUpdatedTimestamp: Date.now(),
-            completedAtTimestamp: item.completedAtTimestamp
-              ? undefined
-              : Date.now(),
-          }
-        : item
-    );
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setShoppingList(newShoppingList);
+    const newShoppingList = shoppingList.map((item) => {
+      if (item.id === id) {
+        if (item.completedAtTimestamp) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+        } else {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        }
+        return {
+          ...item,
+          lastUpdatedTimestamp: Date.now(),
+          completedAtTimestamp: item.completedAtTimestamp
+            ? undefined
+            : Date.now(),
+        }
+      }
+      return item;
+      })
     saveToStorage(storageKey, newShoppingList);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setShoppingList(newShoppingList);
   };
 
   return (
