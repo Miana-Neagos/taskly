@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { theme } from "../../theme";
 import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
 import * as Notifications from "expo-notifications";
@@ -23,12 +23,15 @@ type CountdownStatus = {
 
 export default function CounterScreen() {
   // const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [countdownState, setCountdownState] = useState<PersistedCountdownState>();
   const [status, setStatus] = useState<CountdownStatus>({
     isOverdue: false,
     distance: {},
   });
 
+  // console.log('this is INITIAL isLoading state:',isLoading);
+  
   /*------- Keeps track of the most recent time the task was completed (the only task) ----------*/
   const lastCompletedTimestamp = countdownState?.completedAtTimestamp[0];
 
@@ -37,12 +40,29 @@ export default function CounterScreen() {
     const initialCountdownState = async () => {
       const value = await getFromStorage(counterStorageKey);
       setCountdownState(value);
+      console.log("Fetched countdown state:", value);
+      setTimeout(() => {
+        setIsLoading(false);        
+      }, 1000);
+
+      // setIsLoading(false);
+      // console.log('this is the useEffect isLoading state:',isLoading);
     };
     initialCountdownState();
   }, []);
 
+  // useEffect(() => {
+  //   if (countdownState) {
+  //     setTimeout(() => {
+  //       setIsLoading(false);        
+  //     }, 1000);
+  //   }
+  // },[countdownState]);
+
   useEffect(() => {
     // setInterval inside the useEffect ensures that the countdown continuously updates every second, regardless of whether "lastCompletedTimestamp" changes
+    // console.log('this is useEffect with SET INTERVAL');
+    
     const intervalId = setInterval(() => {
       // calculating the due time
       const timestamp = lastCompletedTimestamp ? lastCompletedTimestamp + frequency : Date.now();
@@ -96,6 +116,14 @@ export default function CounterScreen() {
     await saveToStorage(counterStorageKey, newCountdownState);
   };
 
+  if(isLoading) {
+    return (
+      <View style={styles.activityIndicatorContainer}>
+        <ActivityIndicator size="large" color={theme.colorBlack}></ActivityIndicator>
+      </View>
+    )  
+  }
+  
   return (
     <View
       style={[
@@ -183,4 +211,13 @@ const styles = StyleSheet.create({
   whiteText: {
     color: theme.colorWhite,
   },
+  activityIndicatorContainer: {
+    flex: 1,
+    justifyContent:"center",
+    alignItems:"center",
+    backgroundColor: theme.colorWhite,
+  },
+  // activityIndicator:{
+  //   flex: 1,
+  // }
 });
