@@ -1,22 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { theme } from "../../theme";
-// import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
-// import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
 import TimeSegment from "../../components/TimeSegment";
 import { getFromStorage} from "../../utils/storage";
 import { scheduleNotifications } from "../../utils/scheduleNotifications";
+import { counterStorageKey, PersistedCountdownState } from "../../utils/shared";
 
 // hard coding a possible frequency for the task -10 secs
 const frequency = 10 * 1000;
-
-const counterStorageKey = "taskly-counter";
-
-export type PersistedCountdownState = {
-  currentNotifId: string | undefined;
-  completedAtTimestamp: number[];
-};
 
 type CountdownStatus = {
   isOverdue: boolean;
@@ -65,40 +57,6 @@ export default function CounterScreen() {
     };
     // passing a dependancy for useEffect so that the countdown logic is recalculated each time "lastUpdatedTimestamp" is modified
   }, [lastCompletedTimestamp]);
-
-  // const scheduleNotifications = async () => {
-  //   let pushNotifId;
-  //   const result = await registerForPushNotificationsAsync();
-
-  //   if (result === "granted") {
-  //     pushNotifId = await Notifications.scheduleNotificationAsync({
-  //       content: {
-  //         title: "Time is up ⌛, task is overdue",
-  //       },
-  //       trigger: {
-  //         seconds: frequency / 1000,
-  //       },
-  //     });
-  //   } else {
-  //     Alert.alert(
-  //       "Unable to schedule notifications",
-  //       "Enable notification permissions for Taskly from device Settings"
-  //     );
-  //   }
-  //   //check countdown state for existing scheduled notifications, then cancel them
-  //   if (countdownState?.currentNotifId) {
-  //     await Notifications.cancelScheduledNotificationAsync(countdownState.currentNotifId);
-  //   }
-
-  //   const newCountdownState: PersistedCountdownState = {
-  //     currentNotifId: pushNotifId,
-  //     completedAtTimestamp: countdownState
-  //       ? [Date.now(), ...countdownState.completedAtTimestamp]
-  //       : [Date.now()],
-  //   };
-  //   setCountdownState(newCountdownState);
-  //   await saveToStorage(counterStorageKey, newCountdownState);
-  // };
 
   if(isLoading) {
     return (
@@ -149,7 +107,7 @@ export default function CounterScreen() {
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.8}
-        onPress={() => scheduleNotifications(frequency, counterStorageKey, countdownState, setCountdownState)}
+        onPress={() => scheduleNotifications(frequency, countdownState, setCountdownState)}
       >
         <Text style={styles.buttonText}>Complete Task</Text>
       </TouchableOpacity>
