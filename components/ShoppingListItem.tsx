@@ -17,7 +17,7 @@ export default function ShoppingListItem({
   onToggleComplete,
 }: Props) {
   const handleDelete = () => {
-    Alert.alert(`Are u sure u wanna delete ${name}?`, "It will be gone 4ever", [
+    Alert.alert(`Are u sure u wanna delete ${name}?`, undefined, [
       {
         text: "Yes",
         onPress: () => onDelete(),

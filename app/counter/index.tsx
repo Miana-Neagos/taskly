@@ -1,17 +1,19 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { theme } from "../../theme";
-import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
-import * as Notifications from "expo-notifications";
+// import { registerForPushNotificationsAsync } from "../../utils/registerForPushNotificationsAsync";
+// import * as Notifications from "expo-notifications";
 import { useEffect, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
 import TimeSegment from "../../components/TimeSegment";
-import { getFromStorage, saveToStorage } from "../../utils/storage";
+import { getFromStorage} from "../../utils/storage";
+import { scheduleNotifications } from "../../utils/scheduleNotifications";
 
 // hard coding a possible frequency for the task -10 secs
 const frequency = 10 * 1000;
+
 const counterStorageKey = "taskly-counter";
 
-type PersistedCountdownState = {
+export type PersistedCountdownState = {
   currentNotifId: string | undefined;
   completedAtTimestamp: number[];
 };
@@ -22,7 +24,6 @@ type CountdownStatus = {
 };
 
 export default function CounterScreen() {
-  // const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [countdownState, setCountdownState] = useState<PersistedCountdownState>();
   const [status, setStatus] = useState<CountdownStatus>({
@@ -30,8 +31,6 @@ export default function CounterScreen() {
     distance: {},
   });
 
-  // console.log('this is INITIAL isLoading state:',isLoading);
-  
   /*------- Keeps track of the most recent time the task was completed (the only task) ----------*/
   const lastCompletedTimestamp = countdownState?.completedAtTimestamp[0];
 
@@ -40,29 +39,15 @@ export default function CounterScreen() {
     const initialCountdownState = async () => {
       const value = await getFromStorage(counterStorageKey);
       setCountdownState(value);
-      console.log("Fetched countdown state:", value);
       setTimeout(() => {
         setIsLoading(false);        
-      }, 1000);
-
-      // setIsLoading(false);
-      // console.log('this is the useEffect isLoading state:',isLoading);
+      }, 500);
     };
     initialCountdownState();
   }, []);
 
-  // useEffect(() => {
-  //   if (countdownState) {
-  //     setTimeout(() => {
-  //       setIsLoading(false);        
-  //     }, 1000);
-  //   }
-  // },[countdownState]);
-
   useEffect(() => {
     // setInterval inside the useEffect ensures that the countdown continuously updates every second, regardless of whether "lastCompletedTimestamp" changes
-    // console.log('this is useEffect with SET INTERVAL');
-    
     const intervalId = setInterval(() => {
       // calculating the due time
       const timestamp = lastCompletedTimestamp ? lastCompletedTimestamp + frequency : Date.now();
@@ -81,45 +66,45 @@ export default function CounterScreen() {
     // passing a dependancy for useEffect so that the countdown logic is recalculated each time "lastUpdatedTimestamp" is modified
   }, [lastCompletedTimestamp]);
 
-  const scheduleNotifications = async () => {
-    let pushNotifId;
-    const result = await registerForPushNotificationsAsync();
+  // const scheduleNotifications = async () => {
+  //   let pushNotifId;
+  //   const result = await registerForPushNotificationsAsync();
 
-    if (result === "granted") {
-      pushNotifId = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Time is up ⌛, task is overdue",
-          // body: "Get Moving",
-        },
-        trigger: {
-          seconds: frequency / 1000,
-        },
-      });
-    } else {
-      Alert.alert(
-        "Unable to schedule notifications",
-        "Enable notification permissions for Taskly from device Settings"
-      );
-    }
-    //check countdown state for existing scheduled notifications, then cancel them
-    if (countdownState?.currentNotifId) {
-      await Notifications.cancelScheduledNotificationAsync(countdownState.currentNotifId);
-    }
+  //   if (result === "granted") {
+  //     pushNotifId = await Notifications.scheduleNotificationAsync({
+  //       content: {
+  //         title: "Time is up ⌛, task is overdue",
+  //       },
+  //       trigger: {
+  //         seconds: frequency / 1000,
+  //       },
+  //     });
+  //   } else {
+  //     Alert.alert(
+  //       "Unable to schedule notifications",
+  //       "Enable notification permissions for Taskly from device Settings"
+  //     );
+  //   }
+  //   //check countdown state for existing scheduled notifications, then cancel them
+  //   if (countdownState?.currentNotifId) {
+  //     await Notifications.cancelScheduledNotificationAsync(countdownState.currentNotifId);
+  //   }
 
-    const newCountdownState: PersistedCountdownState = {
-      currentNotifId: pushNotifId,
-      completedAtTimestamp: countdownState
-        ? [Date.now(), ...countdownState.completedAtTimestamp]
-        : [Date.now()],
-    };
-    setCountdownState(newCountdownState);
-    await saveToStorage(counterStorageKey, newCountdownState);
-  };
+  //   const newCountdownState: PersistedCountdownState = {
+  //     currentNotifId: pushNotifId,
+  //     completedAtTimestamp: countdownState
+  //       ? [Date.now(), ...countdownState.completedAtTimestamp]
+  //       : [Date.now()],
+  //   };
+  //   setCountdownState(newCountdownState);
+  //   await saveToStorage(counterStorageKey, newCountdownState);
+  // };
 
   if(isLoading) {
     return (
       <View style={styles.activityIndicatorContainer}>
         <ActivityIndicator size="large" color={theme.colorBlack}></ActivityIndicator>
+        <Text>Loading...</Text>
       </View>
     )  
   }
@@ -164,7 +149,7 @@ export default function CounterScreen() {
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.8}
-        onPress={scheduleNotifications}
+        onPress={() => scheduleNotifications(frequency, counterStorageKey, countdownState, setCountdownState)}
       >
         <Text style={styles.buttonText}>Complete Task</Text>
       </TouchableOpacity>
@@ -213,11 +198,9 @@ const styles = StyleSheet.create({
   },
   activityIndicatorContainer: {
     flex: 1,
+    gap: 20,
     justifyContent:"center",
     alignItems:"center",
     backgroundColor: theme.colorWhite,
   },
-  // activityIndicator:{
-  //   flex: 1,
-  // }
 });
