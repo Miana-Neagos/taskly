@@ -4,9 +4,11 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import { theme } from "../theme";
 
+// Layout component sets up the main tab navigation for the app
 export default function Layout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: theme.colorOrange }}>
+      {/* Shopping List tab with list icon */}
       <Tabs.Screen
         name="index"
         options={{
@@ -16,6 +18,7 @@ export default function Layout() {
           ),
         }}
       ></Tabs.Screen>
+      {/* Counter tab with clock icon, header is hidden */}
       <Tabs.Screen
         name="counter"
         options={{
@@ -26,6 +29,7 @@ export default function Layout() {
           ),
         }}
       ></Tabs.Screen>
+      {/* Idea tab with lightbulb icon */}
       <Tabs.Screen
         name="idea"
         options={{

@@ -15,8 +15,6 @@ export async function registerForPushNotificationsAsync() {
   if (Device.isDevice) {
     // Step 1: Get the current notification permissions
     const permissions = await Notifications.getPermissionsAsync();
-    // console.log(`this is permissions object:`);
-    // console.log(permissions);
     
     // Step 2: Extract the status from the permissions object
     const currentPermissionStatus = permissions.status;
@@ -26,8 +24,6 @@ export async function registerForPushNotificationsAsync() {
       // Step 4: If not granted, request permissions from the user
       const requestPermissionResult =
         await Notifications.requestPermissionsAsync();
-    //   console.log(`this is request permission result:`);
-    //   console.log(requestPermissionResult);
 
       const newPermissionStatus = requestPermissionResult.status;
 
@@ -39,14 +35,3 @@ export async function registerForPushNotificationsAsync() {
     }
   }
 }
-
-//     const { status: existingStatus } = await Notifications.getPermissionsAsync();
-//     if (existingStatus !== "granted") {
-//         const { status } = await Notifications.requestPermissionsAsync();
-//         return status;
-//     } else {
-//         return existingStatus;
-//     }
-// } else {
-//     return null;
-// }

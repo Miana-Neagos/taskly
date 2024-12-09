@@ -4,10 +4,11 @@ import { counterStorageKey, PersistedCountdownState } from "../../utils/shared";
 import { getFromStorage } from "../../utils/storage";
 import { theme } from "../../theme";
 
+// HistoryScreen component for displaying a list of completed countdown history
 export default function HistoryScreen() {
-  const [countdownState, setCountdownState] =
-    useState<PersistedCountdownState>();
+  const [countdownState, setCountdownState] = useState<PersistedCountdownState>();
 
+  // Fetch countdown history data on component mount
   useEffect(() => {
     const initialData = async () => {
       const value = await getFromStorage(counterStorageKey);
@@ -16,6 +17,7 @@ export default function HistoryScreen() {
     initialData();
   }, []);
 
+  // Format timestamp into a readable date-time string
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
     const options: Intl.DateTimeFormatOptions = {
@@ -30,35 +32,28 @@ export default function HistoryScreen() {
   };
 
   return (
-      <FlatList
-        style={styles.list}
-        contentContainerStyle={styles.contentContainer}
-        data={countdownState?.completedAtTimestamp}
-        keyExtractor={(item, index) => index.toString()}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyContainerText}>No history data</Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <View style={styles.listItem}>
-            <Text style={styles.listItemText}>{formatTimestamp(item)}</Text>
-          </View>
-        )}
-      ></FlatList>
+    <FlatList
+      style={styles.list}
+      contentContainerStyle={styles.contentContainer}
+      data={countdownState?.completedAtTimestamp}
+      keyExtractor={(item, index) => index.toString()}
+      // Show this message if there’s no history data
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyContainerText}>No history data</Text>
+        </View>
+      }
+      // Render each item in the history list
+      renderItem={({ item }) => (
+        <View style={styles.listItem}>
+          <Text style={styles.listItemText}>{formatTimestamp(item)}</Text>
+        </View>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff",
-  },
-  text: {
-    fontSize: 24,
-  },
   list: {
     flex: 1,
     backgroundColor: theme.colorWhite,
@@ -83,6 +78,6 @@ const styles = StyleSheet.create({
   },
   emptyContainerText: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
 });
