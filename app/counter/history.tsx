@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { counterStorageKey, PersistedCountdownState } from "../../utils/shared";
 import { getFromStorage } from "../../utils/storage";
-import { format } from "date-fns";
 import { theme } from "../../theme";
 
 export default function HistoryScreen() {
@@ -16,9 +15,6 @@ export default function HistoryScreen() {
     };
     initialData();
   }, []);
-
-  // const formatedTimestamps = countdownState?.completedAtTimestamp?.map(timestamp => new Date(timestamp).toLocaleDateString());
-  // console.log({formatedTimestamps});
 
   const formatTimestamp = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -34,10 +30,6 @@ export default function HistoryScreen() {
   };
 
   return (
-    // <>
-    //   <View style={styles.container}>
-    //     <Text style={styles.text}>History</Text>
-    //   </View>
       <FlatList
         style={styles.list}
         contentContainerStyle={styles.contentContainer}
@@ -54,7 +46,6 @@ export default function HistoryScreen() {
           </View>
         )}
       ></FlatList>
-    // </>
   );
 }
 

@@ -23,6 +23,7 @@ export default function Layout() {
           ),
         }}
       ></Stack.Screen>
+      <Stack.Screen name="history" options={{title: "History"}}></Stack.Screen>
     </Stack>
   );
 }
