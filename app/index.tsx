@@ -28,13 +28,10 @@ export default function App() {
   const [typedValue, setTypedValue] = useState<string>();
   const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
 
-  // console.log("App component re-rendered");
-
   useEffect(() => {
     const fetchInitial = async () => {
       const data = await getFromStorage(storageKey);
       if (data) {
-        // console.log(`this is USE EFFECT and the data is:`, data);
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
         setShoppingList(data);
       }

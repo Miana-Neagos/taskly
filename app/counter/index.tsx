@@ -1,11 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, useWindowDimensions } from "react-native";
 import { theme } from "../../theme";
-import { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
 import TimeSegment from "../../components/TimeSegment";
 import { getFromStorage} from "../../utils/storage";
-import { scheduleNotifications } from "../../utils/scheduleNotifications";
+import { handleTaskCompletion } from "../../utils/handleTaskCompletion";
 import { counterStorageKey, PersistedCountdownState } from "../../utils/shared";
+import ConfettiCannon from "react-native-confetti-cannon";
 
 // hard coding a possible frequency for the task -10 secs
 const frequency = 10 * 1000;
@@ -22,6 +23,8 @@ export default function CounterScreen() {
     isOverdue: false,
     distance: {},
   });
+  const confettiRef = useRef<any>();
+  const { width } = useWindowDimensions();
 
   /*------- Keeps track of the most recent time the task was completed (the only task) ----------*/
   const lastCompletedTimestamp = countdownState?.completedAtTimestamp[0];
@@ -57,6 +60,15 @@ export default function CounterScreen() {
     };
     // passing a dependancy for useEffect so that the countdown logic is recalculated each time "lastUpdatedTimestamp" is modified
   }, [lastCompletedTimestamp]);
+
+// on task completion, both the confetti animation and the task state update are triggered
+  const onTaskCompletion = () => {
+    //trigger the confetti animation using the ref
+    confettiRef?.current?.start();
+
+    //handle the task state update
+    handleTaskCompletion(frequency, countdownState, setCountdownState);
+  }
 
   if(isLoading) {
     return (
@@ -107,10 +119,12 @@ export default function CounterScreen() {
       <TouchableOpacity
         style={styles.button}
         activeOpacity={0.8}
-        onPress={() => scheduleNotifications(frequency, countdownState, setCountdownState)}
+        // onPress={() => handleTaskCompletion(frequency, countdownState, setCountdownState)}
+        onPress={onTaskCompletion}
       >
         <Text style={styles.buttonText}>Complete Task</Text>
       </TouchableOpacity>
+      <ConfettiCannon count={200} origin={{ x: width / 2, y:-10 }} autoStart={false} fadeOut={true} ref={confettiRef}></ConfettiCannon>
     </View>
   );
 }

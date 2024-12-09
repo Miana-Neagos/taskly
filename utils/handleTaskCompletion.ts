@@ -3,13 +3,18 @@ import * as Notifications from "expo-notifications";
 import { Alert } from "react-native";
 import { saveToStorage } from "./storage";
 import { counterStorageKey, PersistedCountdownState } from "./shared";
+import * as Haptics from "expo-haptics";
 
-export const scheduleNotifications = async (
+export const handleTaskCompletion = async (
   frequency: number,
   // counterStorageKey: string,
   countdownState: PersistedCountdownState | undefined,
-  setCountdownState: React.Dispatch<React.SetStateAction<PersistedCountdownState | undefined>>
+  setCountdownState: React.Dispatch<
+    React.SetStateAction<PersistedCountdownState | undefined>
+  >
 ) => {
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
   let pushNotifId;
   const result = await registerForPushNotificationsAsync();
 

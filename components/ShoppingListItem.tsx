@@ -10,12 +10,7 @@ type Props = {
   onToggleComplete: () => void;
 };
 
-export default function ShoppingListItem({
-  name,
-  isCompleted,
-  onDelete,
-  onToggleComplete,
-}: Props) {
+export default function ShoppingListItem({ name, isCompleted, onDelete, onToggleComplete,}: Props) {
   const handleDelete = () => {
     Alert.alert(`Are u sure u wanna delete ${name}?`, undefined, [
       {
@@ -29,6 +24,7 @@ export default function ShoppingListItem({
       },
     ]);
   };
+  
   return (
     <Pressable
       style={[
