@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, useWindowDimensions } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, useWindowDimensions, Platform } from "react-native";
 import { theme } from "../../theme";
 import React, { useEffect, useRef, useState } from "react";
 import { intervalToDuration, isBefore } from "date-fns";
@@ -7,6 +7,7 @@ import { getFromStorage } from "../../utils/storage";
 import { handleTaskCompletion } from "../../utils/handleTaskCompletion";
 import { counterStorageKey, PersistedCountdownState } from "../../utils/shared";
 import ConfettiCannon from "react-native-confetti-cannon";
+import DeviceInfo from "react-native-device-info";
 
 // Define a hardcoded interval frequency for task updates (10 seconds).
 const frequency = 10 * 1000;
@@ -71,7 +72,10 @@ export default function CounterScreen() {
    * Handles task completion logic, triggering both the confetti animation 
    * and updates to the countdown state.
    */
-  const onTaskCompletion = () => {
+  const onTaskCompletion = async () => {
+    const isEmulator = await DeviceInfo.isEmulator();
+    console.log(`Task completion triggered. Running on emulator? ${isEmulator}`);
+        
     confettiRef?.current?.start();
     handleTaskCompletion(frequency, countdownState, setCountdownState);
   };
@@ -118,7 +122,7 @@ export default function CounterScreen() {
 
       {/* Render confetti animation upon task completion */}
       <ConfettiCannon
-        count={200}
+        count={50}
         origin={{ x: width / 2, y: -10 }}
         autoStart={false}
         fadeOut={true}

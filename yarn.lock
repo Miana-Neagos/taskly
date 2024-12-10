@@ -6451,6 +6451,11 @@ react-native-confetti-cannon@^1.5.2:
   resolved "https://registry.yarnpkg.com/react-native-confetti-cannon/-/react-native-confetti-cannon-1.5.2.tgz#ca1a05edd2a64b080ea8b6238c49277908e1f123"
   integrity sha512-IZuWjlW7QsdxEGNnvpD6W+7iKCCQhnd5BvuNvMtirU7Nxm8WS2N6LPGMBz1ZYDuusG+GRZkoXXTNCdoAAGpCTg==
 
+react-native-device-info@^14.0.1:
+  version "14.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-14.0.1.tgz#88b0246be7b5eec00f16843306ac95244b23ceb9"
+  integrity sha512-/ygggNdYgddjEnWxaNOwrL8bT9u8iJXCdz/CKpQi61SptIMmlCXmn125ey4rr0CTK/YIVpL6kZhVFInnNo+Q3w==
+
 react-native-helmet-async@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/react-native-helmet-async/-/react-native-helmet-async-2.0.4.tgz#93f53a1ff22d6898039688a541653a2d6b6866bb"
