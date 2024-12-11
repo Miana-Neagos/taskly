@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "taskly",
+    "name": "Taskly",
     "slug": "taskly",
     "scheme": "taskly",
     "version": "1.0.0",
@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000"
     },
     "ios": {
       "supportsTablet": true
