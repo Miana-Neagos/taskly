@@ -1,7 +1,7 @@
 # Taskly
 
 ## Description
-Taskly is a basic React Native app designed to help learn and explore the basics of React Native development. The app mimics task completion counters, featuring countdowns that track task deadlines, along with push notifications, async storage, haptics and task history.
+Taskly is a basic React Native app designed to help users learn and explore the fundamentals of React Native development. The app mimics task completion counters, featuring countdowns that track task deadlines, along with push notifications, async storage, haptics, app icon changes, and task history.
 
 ## Features
 - **Task Completion Tracking**: Mimic task counters with countdowns to completion.
