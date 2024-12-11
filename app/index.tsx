@@ -24,8 +24,8 @@ if (Platform.OS === 'android') {
 }
 
 export default function App() {
-  const [typedValue, setTypedValue] = useState<string>(); // State to track user input in TextInput
-  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]); // State to manage shopping list data
+  const [typedValue, setTypedValue] = useState<string>(); 
+  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]); 
 
   // Fetch initial shopping list data from local storage
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function App() {
     if (typedValue) {
       const newShoppingList = [
         {
-          id: generateId(), // Generate unique ID for new items
+          id: generateId(), 
           name: typedValue,
           lastUpdatedTimestamp: Date.now(),
         },
@@ -60,11 +60,11 @@ export default function App() {
 
   // Handle deletion of an item from the shopping list
   const handleDelete = (id: string) => {
-    const newShoppingList = shoppingList.filter((item) => item.id !== id); // Filter out the item to delete
-    saveToStorage(storageKey, newShoppingList); // Persist change to storage
+    const newShoppingList = shoppingList.filter((item) => item.id !== id); 
+    saveToStorage(storageKey, newShoppingList); 
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Animate UI changes
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft); // Provide haptic feedback for better UX
-    setShoppingList(newShoppingList); // Update state
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+    setShoppingList(newShoppingList); 
   };
 
   // Handle toggling item completion status
@@ -87,21 +87,19 @@ export default function App() {
       }
       return item;
     });
-    saveToStorage(storageKey, newShoppingList); // Save state to storage
+    saveToStorage(storageKey, newShoppingList);
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Animate changes
-    setShoppingList(newShoppingList); // Update local state
+    setShoppingList(newShoppingList); 
   };
 
   return (
     <>
       <FlatList
-        // Display a message if the shopping list is empty
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text>Shopping list is empty.</Text>
           </View>
         }
-        // Input field for adding new items to the shopping list
         ListHeaderComponent={
           <TextInput
             style={styles.textInput}
@@ -115,13 +113,11 @@ export default function App() {
             onSubmitEditing={handleSubmit}
           />
         }
-        // Order the shopping list using the provided utility
         data={orderShoppingList(shoppingList)}
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
-        stickyHeaderIndices={[0]} // Keep input field sticky on scroll
+        stickyHeaderIndices={[0]} 
         renderItem={({ item }) => (
-          // Render shopping list items with interactivity
           <ShoppingListItem
             name={item.name}
             onDelete={() => handleDelete(item.id)}

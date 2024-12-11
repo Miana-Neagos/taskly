@@ -36,7 +36,7 @@ export default function ShoppingListItem({ name, isCompleted, onDelete, onToggle
           styles.itemContainer,
           isCompleted ? styles.completedContainer : undefined, 
         ]}
-        onPress={onToggleComplete} // Handle toggling completion on press
+        onPress={onToggleComplete} 
       >
         <View style={styles.row}>
           {/* Display checkbox-like icon depending on completion status */}
